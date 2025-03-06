@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links App - Alpine.js</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div x-data="app()" class="app">
+        <header class="header">
+            <h1>Links App</h1>
+            <nav>
+                <button @click="currentPage = 'home'" :class="{'active': currentPage === 'home'}" class="nav-button">Inicio</button>
+                <button @click="currentPage = 'add'" :class="{'active': currentPage === 'add'}" class="nav-button">Añadir Link</button>
+            </nav>
+        </header>
+
+        <main class="container">
+            <!-- Página principal -->
+            <div x-show="currentPage === 'home'" x-cloak>
+                <h2>Todos los Enlaces</h2>
+                
+                <div class="tag-filter">
+                    <label>
+                        Filtrar por etiqueta:
+                        <select x-model="selectedTag" @change="loadLinks()">
+                            <option value="">Todas las etiquetas</option>
+                            <template x-for="tag in tags" :key="tag.id">
+                                <option :value="tag.name" x-text="tag.name"></option>
+                            </template>
+                        </select>
+                    </label>
+                </div>
+
+                <p x-show="loading">Cargando enlaces...</p>
+                <p x-show="error" class="error" x-text="error"></p>
+                <p x-show="!loading && !error && links.length === 0">No se encontraron enlaces.</p>
+                
+                <div x-show="!loading && !error && links.length > 0" class="links-list">
+                    <template x-for="link in links" :key="link.id">
+                        <div class="link-card">
+                            <h3><a href="#" @click.prevent="showLinkDetails(link.id)" x-text="link.title"></a></h3>
+                            <p x-text="link.description || ''"></p>
+                            <p><a :href="link.url" target="_blank" x-text="link.url"></a></p>
+                            <div>
+                                <template x-for="tag in link.tags" :key="tag.id">
+                                    <span class="tag" x-text="tag.name"></span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Página de detalles del enlace -->
+            <div x-show="currentPage === 'detail'" x-cloak>
+                <p x-show="loading">Cargando detalles del enlace...</p>
+                <p x-show="error" class="error" x-text="error"></p>
+                <p x-show="!loading && !error && !currentLink">No se encontró el enlace.</p>
+                
+                <div x-show="!loading && !error && currentLink" class="link-detail">
+                    <h2 x-text="currentLink.title"></h2>
+                    <p x-text="currentLink.description || ''"></p>
+                    <p><a :href="currentLink.url" target="_blank" x-text="currentLink.url"></a></p>
+                    
+                    <div>
+                        <template x-for="tag in currentLink.tags" :key="tag.id">
+                            <span class="tag" x-text="tag.name"></span>
+                        </template>
+                    </div>
+                    
+                    <div class="vote-section">
+                        <h3>Votar por este enlace</h3>
+                        <p>Votos actuales: <strong x-text="totalVotes"></strong></p>
+                        <button @click="addVote()">Me gusta</button>
+                    </div>
+                    
+                    <div class="comments-section">
+                        <h3>Comentarios</h3>
+                        
+                        <p x-show="!currentLink.comments || currentLink.comments.length === 0">Aún no hay comentarios.</p>
+                        
+                        <template x-for="comment in currentLink.comments" :key="comment.id">
+                            <div class="comment">
+                                <p x-text="comment.text"></p>
+                                <small>Por: <span x-text="comment.userName"></span></small>
+                            </div>
+                        </template>
+                        
+                        <h4>Añadir un Comentario</h4>
+                        <form @submit.prevent="addComment()">
+                            <div>
+                                <label for="userName">Tu Nombre:</label>
+                                <input type="text" id="userName" x-model="newComment.userName" required>
+                            </div>
+                            <div>
+                                <label for="commentText">Comentario:</label>
+                                <textarea id="commentText" x-model="newComment.text" required></textarea>
+                            </div>
+                            <button type="submit">Enviar</button>
+                        </form>
+                    </div>
+
+                    <button @click="currentPage = 'home'">Volver a la lista</button>
+                </div>
+            </div>
+
+            <!-- Página de añadir enlace -->
+            <div x-show="currentPage === 'add'" x-cloak>
+                <h2>Añadir Nuevo Enlace</h2>
+                
+                <p x-show="error" class="error" x-text="error"></p>
+                
+                <form @submit.prevent="createLink()">
+                    <div>
+                        <label for="title">Título:</label>
+                        <input type="text" id="title" x-model="newLink.title" required>
+                    </div>
+                    
+                    <div>
+                        <label for="url">URL:</label>
+                        <input type="url" id="url" x-model="newLink.url" required>
+                    </div>
+                    
+                    <div>
+                        <label for="description">Descripción:</label>
+                        <textarea id="description" x-model="newLink.description"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="tags">Etiquetas (separadas por comas):</label>
+                        <input type="text" id="tags" x-model="newLink.tagsInput" placeholder="ej. tecnología, programación, alpine">
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit">Guardar</button>
+                        <button type="button" @click="currentPage = 'home'">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

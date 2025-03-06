@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-button {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.nav-button.active {
+    background-color: #0056b3;
+}
+
+.link-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #eee;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.tag-filter {
+    margin-bottom: 20px;
+}
+
+.comment {
+    border-top: 1px solid #eee;
+    padding: 10px 0;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input, 
+textarea, 
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+button {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.error {
+    color: red;
+    background-color: #ffeeee;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+[x-cloak] {
+    display: none !important;
+}
